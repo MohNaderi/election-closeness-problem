@@ -1,18 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jan 19 11:09:00 2021
-
-@author: mnaderi
-"""
-
-
 import gurobipy as grb
 import pandas as pd
 from gurobipy import GRB
-
-
-
-
 
 
 def readData(filename):
@@ -77,7 +65,6 @@ def formulation(df):
                                        ])
     
     
-    
     status = model.getAttr(grb.GRB.Attr.Status)
     if status == grb.GRB.OPTIMAL:
         for i in range(n):
@@ -89,7 +76,7 @@ def formulation(df):
                                             loserPartyName + ' Theoretical EV' : dfWinnerStates.iloc[i]["EV"]
                                             },  
                                            ignore_index = True) 
-    print(dfResult)
+    
     return dfResult
 
 if __name__ == '__main__':
