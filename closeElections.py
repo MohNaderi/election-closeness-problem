@@ -82,6 +82,12 @@ def formulation(df):
                                             },  
                                            ignore_index = True) 
     
+    #adding total popular votes info
+    dfResult = dfResult.append(dfResult[[winnerPartyName + ' Theoretical PV',
+                                       winnerPartyName + ' Theoretical EV',
+                                       runnerupPartyName + ' Theoretical PV',
+                                       runnerupPartyName + ' Theoretical EV']].sum(),ignore_index=True).fillna('')
+    
     return dfResult
 
 if __name__ == '__main__':
@@ -99,7 +105,7 @@ if __name__ == '__main__':
     writer = pd.ExcelWriter(output_file_name, engine='xlsxwriter')
     sheetName = 2000
     for df in dfs:
-        print(df)
+        #print(df)
         dfResult = formulation(df)
         dfResult.to_excel(writer, sheet_name = str(sheetName))
         sheetName += 4
