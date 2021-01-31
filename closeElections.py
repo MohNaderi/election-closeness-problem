@@ -1,3 +1,8 @@
+#throughout this code we used the following abrevation: 
+        #PV -> Popular Vote
+        #EV -> Electoral Vote
+        #DEM -> Democratic Party
+        #REP -> Republican Party
 import gurobipy as grb
 import pandas as pd
 from gurobipy import GRB
@@ -19,8 +24,8 @@ def formulation(df):
     REPTotalEV = df.at[51, 'REP EV']
     
     winnerPartyName = 'DEM' if DEMTotalEV > REPTotalEV else 'REP'  
-    loserPartyName = 'DEM' if DEMTotalEV < REPTotalEV else 'REP' 
-    loserEV = DEMTotalEV if DEMTotalEV < REPTotalEV else REPTotalEV
+    runnerupPartyName = 'DEM' if DEMTotalEV < REPTotalEV else 'REP' 
+    runnerupEV = DEMTotalEV if DEMTotalEV < REPTotalEV else REPTotalEV
     
     
     dfWinnerStates = df.loc[df[winnerPartyName + ' EV'] > 0]
@@ -52,7 +57,7 @@ def formulation(df):
     model.update()    
     
     #define the constraint
-    model.addConstr( grb.quicksum(x[i] * dfWinnerStates.iloc[i]["EV"] for i in range(n)) >= 270 - loserEV)
+    model.addConstr( grb.quicksum(x[i] * dfWinnerStates.iloc[i]["EV"] for i in range(n)) >= 270 - runnerupEV)
     
     #optimize the model
     model.optimize()
@@ -60,8 +65,8 @@ def formulation(df):
     #print solution
     dfResult = pd.DataFrame(columns = ['State', winnerPartyName + ' Theoretical PV',
                                        winnerPartyName + ' Theoretical EV',
-                                       loserPartyName + ' Theoretical PV',
-                                       loserPartyName + ' Theoretical EV'
+                                       runnerupPartyName + ' Theoretical PV',
+                                       runnerupPartyName + ' Theoretical EV'
                                        ])
     
     
@@ -72,8 +77,8 @@ def formulation(df):
                 dfResult = dfResult.append({'State': winnerStateList[i],
                                             winnerPartyName + ' Theoretical PV' : dfWinnerStates.iloc[i][winnerPartyName + " PV"] - changePopularVote[i] ,
                                             winnerPartyName + ' Theoretical EV' :  0 ,
-                                            loserPartyName + ' Theoretical PV' : dfWinnerStates.iloc[i][loserPartyName + " PV"] + changePopularVote[i],
-                                            loserPartyName + ' Theoretical EV' : dfWinnerStates.iloc[i]["EV"]
+                                            runnerupPartyName + ' Theoretical PV' : dfWinnerStates.iloc[i][runnerupPartyName + " PV"] + changePopularVote[i],
+                                            runnerupPartyName + ' Theoretical EV' : dfWinnerStates.iloc[i]["EV"]
                                             },  
                                            ignore_index = True) 
     
