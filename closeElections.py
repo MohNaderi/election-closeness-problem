@@ -23,6 +23,9 @@ def formulation(df):
     DEMTotalEV = df.at[51, 'DEM EV']
     REPTotalEV = df.at[51, 'REP EV']
     
+    REPRepresentative = df.at[0, 'Republican Candidate']
+    DEMRepresentative = df.at[0, 'Democratic Candidate']
+    
     winnerPartyName = 'DEM' if DEMTotalEV > REPTotalEV else 'REP'  
     runnerupPartyName = 'DEM' if DEMTotalEV < REPTotalEV else 'REP' 
     runnerupEV = DEMTotalEV if DEMTotalEV < REPTotalEV else REPTotalEV
@@ -83,10 +86,12 @@ def formulation(df):
                                            ignore_index = True) 
     
     #adding total popular votes info
-    dfResult = dfResult.append(dfResult[[winnerPartyName + ' Theoretical PV',
-                                       winnerPartyName + ' Theoretical EV',
-                                       runnerupPartyName + ' Theoretical PV',
-                                       runnerupPartyName + ' Theoretical EV']].sum(),ignore_index=True).fillna('')
+    dfResult = dfResult.append({'State': "Total PV needed to switch the result",
+                                            winnerPartyName + ' Theoretical PV' : model.objVal,
+                                            'Republican Candidate': REPRepresentative,
+                                            'Democratic Candidate': DEMRepresentative
+                                            },  
+                                           ignore_index = True) 
     
     return dfResult
 
