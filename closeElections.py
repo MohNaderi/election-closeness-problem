@@ -69,7 +69,8 @@ def formulation(df):
     dfResult = pd.DataFrame(columns = ['State', winnerPartyName + ' Theoretical PV',
                                        winnerPartyName + ' Theoretical EV',
                                        runnerupPartyName + ' Theoretical PV',
-                                       runnerupPartyName + ' Theoretical EV'
+                                       runnerupPartyName + ' Theoretical EV',
+                                       'Number of switch needed in PV'
                                        ])
     
     
@@ -81,13 +82,14 @@ def formulation(df):
                                             winnerPartyName + ' Theoretical PV' : dfWinnerStates.iloc[i][winnerPartyName + " PV"] - changePopularVote[i] ,
                                             winnerPartyName + ' Theoretical EV' :  0 ,
                                             runnerupPartyName + ' Theoretical PV' : dfWinnerStates.iloc[i][runnerupPartyName + " PV"] + changePopularVote[i],
-                                            runnerupPartyName + ' Theoretical EV' : dfWinnerStates.iloc[i]["EV"]
+                                            runnerupPartyName + ' Theoretical EV' : dfWinnerStates.iloc[i]["EV"],
+                                            'Number of switch needed in PV' : changePopularVote[i]
                                             },  
                                            ignore_index = True) 
     
     #adding total popular votes info
     dfResult = dfResult.append({'State': "Total PV needed to switch the result",
-                                            winnerPartyName + ' Theoretical PV' : model.objVal,
+                                            'Number of switch needed in PV': model.objVal,
                                             'Republican Candidate': REPRepresentative,
                                             'Democratic Candidate': DEMRepresentative
                                             },  
